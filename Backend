@@ -97,3 +97,43 @@ def is_text_pixel_changed(image_path, threshold=50):
 image_path = "PO -3.jpg"  # Replace with the path to your image file
 result = is_text_pixel_changed(image_path)
 print("Is there a change in text pixel?", result)
+
+#font consistency 
+import fitz  # PyMuPDF library for PDF processing
+
+def extract_text_from_pdf(pdf_path):
+    # Open the PDF file in binary mode
+    with open(pdf_path, 'rb') as file:
+        pdf_document = fitz.open(pdf_path)
+        text = ""
+
+        # Loop through each page and extract text
+        for page_num in range(pdf_document.page_count):
+            page = pdf_document.load_page(page_num)
+            text += page.get_text()
+
+    return text
+
+def check_font_consistency(text):
+    # Get all font styles used in the text
+    font_styles = set()
+
+    # Loop through each page in the text
+    for page_text in text.split('\f'):
+        # Loop through each character in the page text
+        for char in page_text:
+            font_name = char.fontname
+            font_size = char.fontsize
+            font_style = (font_name, font_size)
+            font_styles.add(font_style)
+
+    # If there's only one font style, return True (consistent)
+    is_consistent = len(font_styles) == 1
+
+    return is_consistent
+
+# Example usage
+pdf_path = "/content/4572921_Dr.certificate.pdf"  # Replace with the path to your PDF file
+text_content = extract_text_from_pdf(pdf_path)
+result = check_font_consistency(text_content)
+print("Is the font consistent?", result)
