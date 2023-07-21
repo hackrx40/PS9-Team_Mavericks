@@ -16,12 +16,12 @@ worklogs = "RUNNING CHECKS ..."
 def main():
     return render_template('index.html')
 
-@app.route('/checks', methods = ['POST'])  
+@app.route('/success', methods = ['POST'])  
 def success():  
     if request.method == 'POST':  
         f = request.files['file']
         f.save(f.filename)
-        return render_template("checks.html", name = f.filename, logs=runchecks(f.filename)) 
+        return render_template("Acknowledgement.html", name = f.filename, logs=runchecks(f.filename)) 
           
 
 
