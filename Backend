@@ -1,0 +1,56 @@
+#uniformity check
+import PyPDF2
+from PIL import Image
+from fontTools.ttLib import TTFont
+
+def extract_text_from_pdf(pdf_path):
+    # Open the PDF file in binary mode
+    with open(pdf_path, 'rb') as file:
+        pdf_reader = PyPDF2.PdfReader(file)
+        text = ""
+
+        # Loop through each page and extract text
+        for page_num in range(len(pdf_reader.pages)):
+            page = pdf_reader.pages[page_num]
+            text += page.extract_text()
+
+    return text
+
+def extract_fonts_from_pdf(pdf_path):
+    # Open the PDF file in binary mode
+    with open(pdf_path, 'rb') as file:
+        pdf_reader = PyPDF2.PdfReader(file)
+        fonts = set()
+
+        # Loop through each page and extract font information
+        for page_num in range(len(pdf_reader.pages)):
+            page = pdf_reader.pages[page_num]
+            resources = page['/Resources']
+            if '/Font' in resources:
+                font_objects = resources['/Font']
+                for font_object in font_objects:
+                    font_name = font_objects[font_object]['/BaseFont'].decode('utf-8')
+                    fonts.add(font_name)
+
+    return fonts
+
+def check_uniformness_of_fonts(file_path):
+    if file_path.lower().endswith(".pdf"):
+        # If the file is a PDF, extract text using the defined function
+        extracted_text = extract_text_from_pdf(file_path)
+        fonts_used = extract_fonts_from_pdf(file_path)
+    else:
+        # If the file is an image, use pytesseract to read the text
+        image = Image.open(file_path)
+        extracted_text = pytesseract.image_to_string(image)
+        fonts_used = set()  # Not applicable for images since fonts aren't used directly in images.
+
+    # Check if only one font is used in the text (uniformness check)
+    is_uniform_font = len(fonts_used) == 1
+
+    return is_uniform_font
+
+# Example usage
+file_path = "sample.pdf"  # Replace with the path to your PDF or image file
+result = check_uniformness_of_fonts(file_path)
+print("Uniformness of fonts:", result)
