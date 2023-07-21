@@ -54,3 +54,46 @@ def check_uniformness_of_fonts(file_path):
 file_path = "sample.pdf"  # Replace with the path to your PDF or image file
 result = check_uniformness_of_fonts(file_path)
 print("Uniformness of fonts:", result)
+
+
+#text pixel
+import cv2
+
+def is_text_pixel_changed(image_path, threshold=50):
+    # Read the image using OpenCV
+    image = cv2.imread(image_path)
+
+    # Convert the image to grayscale
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Threshold the image to create a binary image (black and white)
+    _, binary_image = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)
+
+    # Find contours in the binary image
+    contours, _ = cv2.findContours(binary_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    # Iterate through each contour
+    for contour in contours:
+        # Calculate the bounding box of the contour
+        x, y, w, h = cv2.boundingRect(contour)
+
+        # Crop the region containing the text from the original image
+        text_region = image[y:y+h, x:x+w]
+
+        # Calculate the mean pixel value of the text region
+        text_mean_pixel = text_region.mean()
+
+        # Calculate the mean pixel value of the background region
+        background_region = image[0:y, 0:x+w]
+        background_mean_pixel = background_region.mean()
+
+        # Check if the mean pixel value of the text region is significantly different from the background
+        if abs(text_mean_pixel - background_mean_pixel) > threshold:
+            return True
+
+    return False
+
+# Example usage
+image_path = "PO -3.jpg"  # Replace with the path to your image file
+result = is_text_pixel_changed(image_path)
+print("Is there a change in text pixel?", result)
