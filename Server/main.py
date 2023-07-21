@@ -2,11 +2,13 @@ from google.cloud import vision
 from flask import render_template
 from distutils.log import debug
 from fileinput import filename
-from flask import * 
+from flask import *
+import time 
   
 # creates a Flask application
 app = Flask(__name__)
 fileToWork = None
+worklogs = "RUNNING CHECKS ..."
   
 @app.route("/")
 def main():
@@ -17,10 +19,17 @@ def success():
     if request.method == 'POST':  
         f = request.files['file']
         f.save(f.filename)
+        fileToWork = f
         detect_properties(f.filename)
-        return render_template("Acknowledgement.html", name = f.filename) 
+        runchecks()
+        render_template("Acknowledgement.html", name = f.filename, logs=worklogs) 
           
-          
+
+
+def runchecks() :
+    time.sleep(10)
+    worklogs+="\n Running checks still"
+         
 def detect_properties(path):
     """Detects image properties in the file."""
     
