@@ -3,8 +3,10 @@ from flask import render_template
 from distutils.log import debug
 from fileinput import filename
 from flask import *
-import time 
-  
+import pikepdf
+import sys
+
+
 # creates a Flask application
 app = Flask(__name__)
 fileToWork = None
@@ -19,16 +21,18 @@ def success():
     if request.method == 'POST':  
         f = request.files['file']
         f.save(f.filename)
-        fileToWork = f
-        detect_properties(f.filename)
-        runchecks()
-        render_template("Acknowledgement.html", name = f.filename, logs=worklogs) 
+        return render_template("Acknowledgement.html", name = f.filename, logs=runchecks(f.filename)) 
           
 
 
-def runchecks() :
-    time.sleep(10)
-    worklogs+="\n Running checks still"
+def runchecks(fileToWork) :
+    checkModificationinPDF(fileToWork)
+    
+    
+def checkModificationinPDF(pdf_filename):
+    pdf = pikepdf.Pdf.open(pdf_filename)
+    docinfo = pdf.docinfo
+    print(docinfo["/ModDate"]==docinfo["/CreationDate"])
          
 def detect_properties(path):
     """Detects image properties in the file."""
@@ -59,6 +63,9 @@ def detect_properties(path):
         )
         
         
+        
+    
+
 
 # run the application
 if __name__ == "__main__":
