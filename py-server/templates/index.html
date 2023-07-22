@@ -16,25 +16,26 @@
 }
     </style>
 </head>
-<body>
+<body class="bg-secondary bg-gradient">
     <div class="container">
 
-    <nav class="navbar navbar-light bg-light">
-        <span class="navbar-brand m-5">SUS-Alert</span>
-    </nav>
+    <h1 class="h1 m-5 text-light">SuS Alert</h1>
     <div class="form-area container-fluid">
         <form action="/checks" method="POST" enctype="multipart/form-data">
         
-            <div class="row text-center">
-                <div id='uploadFile' class="col-6">
-                    <input type="file" id="fileUpload" name="file" class="custom-file-input" multiple/>
+            <div class="row text-center mb-3">
+                <div id='uploadFile' class="col-8">
+                    <input type="file" id="fileUpload" name="file" class="custom-file-input" style="width:120%"/>
                 </div>
+            </div>
+            <div class="row text-center">
+
                 <div class="col-6">
                     <select class="form-select " aria-label="Default select example">
-                        <option selected>Select Type of Document</option>
+                        <option selected>Select Document Type</option>
                         <option value="1">Hospital Receipt</option>
-                        <option value="2">Fir Scanned copy</option>
-                        <option value="3">Amazon receipt</option>
+                        <option value="2">Fir Scanned Copy</option>
+                        <option value="3">Amazon Receipt</option>
                     </select>
                 </div>
             </div>
