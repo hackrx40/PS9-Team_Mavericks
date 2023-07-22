@@ -7,7 +7,7 @@ import keras
 import os 
 import tensorflow as tf
 from flask_socketio import SocketIO
-
+import win32com.client
 
 # creates a Flask application
 app = Flask(__name__)
@@ -35,9 +35,12 @@ def checks():
     return render_template("checks.html")
           
     
-    
-def checkModificationinPDF(pdf_filename):
-    return 'Passed'
+
+
+def checkModificationinPDF(path):
+    creation_time = int(os.path.getctime(path))
+    modification_time = int(os.path.getmtime(path))
+    return "Passed" if (creation_time <= modification_time) else "Tampering has been done in the document"
          
 def checkSign(filename):
     model = tf.keras.models.load_model('./ml-sign/keras_model.h5')   
