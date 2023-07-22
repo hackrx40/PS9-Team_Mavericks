@@ -1,0 +1,2 @@
+0 Consistent Handwriting Present
+1 Handwriting Not Present

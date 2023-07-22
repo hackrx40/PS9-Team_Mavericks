@@ -4,6 +4,7 @@ import cv2
 from flask import *
 import sys
 import keras
+from pdf2image import convert_from_path
 import os 
 import tensorflow as tf
 from flask_socketio import SocketIO
@@ -32,6 +33,9 @@ def checks():
         f.save(f.filename)
         with open ('filename.txt', 'w') as file:  
             file.write(f.filename)
+        if "pdf" in f.filename:
+            pdf_to_images(f.filename)
+            
     return render_template("checks.html")
           
     
@@ -68,6 +72,21 @@ def checkStamp(filename):
     else:
         return "Passed"
 
+
+
+def pdf_to_images(input_pdf_path, output_folder="image"):
+    images = convert_from_path(input_pdf_path)
+
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+
+    for i, image in enumerate(images):
+        image_path = os.path.join(output_folder, f'page_{i + 1}.png')
+        image.save(image_path, 'PNG')
+        os.remove('filename.txt')
+        with open ('filename.txt', 'w') as file:  
+            file.write(image_path+".png")
+        
 @socketio.on('message')
 def runTests(data):
     print('received message: ' + str(data))
