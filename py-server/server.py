@@ -47,7 +47,7 @@ def checkSign(filename):
     image = tf.expand_dims(image, axis=0)
     results = model.predict(image)
     if results[0][0] < 1:
-        result = "Tampering Detected, further investigation required"
+        result = "Tampering Detected in signature, further investigation required"
         return result
     else:
         return "Passed"
@@ -60,7 +60,7 @@ def checkStamp(filename):
     image = tf.expand_dims(image, axis=0)
     results = model.predict(image)
     if results[0][0] < 1:
-        result = "Tampering Detected, further investigation required"
+        result = "Tampering Detected in stamp, further investigation required"
         return result
     else:
         return "Passed"
