@@ -80,10 +80,10 @@ def checkHand(filename):
     image = tf.expand_dims(image, axis=0)
     results = model.predict(image)
     if results[0][0] < 1:
-        result = "No handwriting found"
+        result = "Handwriting is Consistant"
         return result
     else:
-        return "Handwriting found!!"
+        return "No handwriting found"
 
 
 
